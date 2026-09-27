@@ -1,0 +1,17 @@
+[build]
+target = "index.html"
+dist = "dist"
+public_url = "./"
+filehash = true
+locked = true
+
+[watch]
+watch = ["src", "index.html", "style.css", "Cargo.toml", "Cargo.lock", "Trunk.toml"]
+
+[serve]
+addresses = ["127.0.0.1"]
+port = 8080
+
+[tools]
+wasm_bindgen = "0.2.128"
+wasm_opt = "version_123"

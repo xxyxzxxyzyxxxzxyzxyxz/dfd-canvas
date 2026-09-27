@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "name": "性能確認 3 ノード / 2 エッジ",
+  "graph": {
+    "nodes": [
+      {
+        "id": "n-0000",
+        "kind": "process",
+        "name": "業務ノード 1",
+        "description": "性能確認用の説明 1"
+      },
+      {
+        "id": "n-0001",
+        "kind": "data_store",
+        "name": "業務ノード 2",
+        "description": "性能確認用の説明 2"
+      },
+      {
+        "id": "n-0002",
+        "kind": "external_entity",
+        "name": "業務ノード 3",
+        "description": "性能確認用の説明 3"
+      }
+    ],
+    "edges": [
+      {
+        "id": "e-0000",
+        "source": "n-0000",
+        "target": "n-0001",
+        "name": "データ 1",
+        "description": "ブラウザ性能確認用"
+      },
+      {
+        "id": "e-0001",
+        "source": "n-0001",
+        "target": "n-0002",
+        "name": "データ 2",
+        "description": "ブラウザ性能確認用"
+      }
+    ]
+  },
+  "layout": {
+    "nodes": {
+      "n-0000": {
+        "x": 40,
+        "y": 40,
+        "width": 170,
+        "height": 80
+      },
+      "n-0001": {
+        "x": 280,
+        "y": 40,
+        "width": 170,
+        "height": 80
+      },
+      "n-0002": {
+        "x": 520,
+        "y": 40,
+        "width": 170,
+        "height": 80
+      }
+    },
+    "edges": {
+      "e-0000": {
+        "source_port": "right",
+        "target_port": "left"
+      },
+      "e-0001": {
+        "source_port": "right",
+        "target_port": "left"
+      }
+    },
+    "viewport": {
+      "pan_x": 20,
+      "pan_y": 20,
+      "zoom": 1.0
+    }
+  }
+}

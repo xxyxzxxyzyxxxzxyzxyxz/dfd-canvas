@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# CI verifies changes; merge authorization is a separate owner decision.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  verify:
+    name: Container and browser checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      COMPOSE_PROJECT_NAME: dfd-canvas-ci
+      BUILDKIT_PROGRESS: plain
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare container ownership and output directory
+        run: |
+          echo "DFD_UID=$(id -u)" >> "$GITHUB_ENV"
+          echo "DFD_GID=$(id -g)" >> "$GITHUB_ENV"
+          mkdir -p test-results
+
+      - name: Build application and verification images
+        run: docker compose build app tools
+
+      - name: Check formatting, tests, lint, Wasm, and release build
+        # Keep diagnostic contents on the runner; publish the check status only.
+        run: |
+          if docker compose run --rm -T tools check > test-results/check.log 2>&1; then
+            echo "Container checks passed."
+          else
+            dfd_check_status=$?
+            echo "::error::Container checks failed. Reproduce locally with: docker compose run --build --rm -T tools check"
+            exit "$dfd_check_status"
+          fi
+
+      - name: Start application and wait for HTTP
+        run: |
+          docker compose up --detach --no-build app
+          curl --fail --silent --show-error --retry 30 --retry-connrefused \
+            --retry-delay 1 --retry-max-time 60 --max-time 5 \
+            --output /dev/null http://127.0.0.1:8080
+
+      - name: Run browser acceptance checks
+        timeout-minutes: 15
+        run: |
+          # Chromium forces HTTPS for the bare hostname "app" through HSTS.
+          if docker compose run --rm -T tools browser-test \
+            --url "http://${COMPOSE_PROJECT_NAME}-app-1:8080" \
+            --only acceptance --output /results/acceptance \
+            > test-results/browser.log 2>&1; then
+            echo "Browser acceptance checks passed."
+          else
+            dfd_browser_status=$?
+            echo "::error::Browser acceptance checks failed. Reproduce locally with: docker compose run --build --rm -T tools browser-test --only acceptance"
+            exit "$dfd_browser_status"
+          fi
+
+      - name: Collect application logs
+        if: always()
+        run: |
+          mkdir -p test-results
+          docker compose logs --no-color app > test-results/app.log 2>&1
+
+      - name: Stop containers and remove temporary volumes
+        if: always()
+        run: docker compose down --volumes --remove-orphans

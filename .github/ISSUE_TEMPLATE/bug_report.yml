@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem with DFD Canvas.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For suspected vulnerabilities, follow SECURITY.md and use the private reporting channel when available. Do not post vulnerability details here.
+        Use synthetic diagrams and remove private information from screenshots, logs, and attachments.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and the behavior you expected.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the smallest set of steps that reproduces the problem.
+      placeholder: |
+        1. Start the app with ...
+        2. Create or load a synthetic diagram ...
+        3. Perform ...
+        4. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: revision
+    attributes:
+      label: Revision
+      description: Source archive version or checksum, and whether you have local changes. Do not include private commit identifiers.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include the host OS and architecture, browser version, Docker and Compose versions, and whether you used app or dev.
+      placeholder: |
+        Host OS / architecture:
+        Browser / version:
+        Docker / Compose versions:
+        Startup command:
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Supporting information
+      description: Add relevant error messages, a small synthetic JSON example, or screenshots. Remove sensitive content and local paths first.

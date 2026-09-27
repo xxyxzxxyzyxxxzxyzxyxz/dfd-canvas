@@ -1,0 +1,31 @@
+name: Feature request
+description: Describe a problem and a focused improvement.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the workflow you want to improve. Use synthetic examples and avoid posting private diagrams or business information.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What are you trying to do, and what makes it difficult today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the change and an example of how someone would use it.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe existing workarounds or other ways to solve the problem.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Include relevant examples, sketches, or compatibility concerns.

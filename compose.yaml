@@ -1,0 +1,59 @@
+name: dfd-canvas
+
+x-build: &build
+  context: .
+  args:
+    DFD_UID: ${DFD_UID:-1000}
+    DFD_GID: ${DFD_GID:-1000}
+
+services:
+  app:
+    platform: linux/amd64
+    build:
+      <<: *build
+      target: app
+    command: ["--listen", "0.0.0.0:8080", "--dir", "/app/dist", "--public-url", "http://127.0.0.1:${DFD_PORT:-8080}"]
+    ports:
+      - "127.0.0.1:${DFD_PORT:-8080}:8080"
+    read_only: true
+    init: true
+
+  dev:
+    profiles: [dev]
+    platform: linux/amd64
+    build:
+      <<: *build
+      target: dev
+    ports:
+      - "127.0.0.1:${DFD_PORT:-8080}:8080"
+    init: true
+    stop_signal: SIGINT
+    volumes:
+      - .:/workspace:ro
+      - dev-build:/build
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+
+  tools:
+    profiles: [tools]
+    platform: linux/amd64
+    build:
+      <<: *build
+      target: tools
+    init: true
+    shm_size: 1gb
+    volumes:
+      - type: bind
+        source: ./test-results
+        target: /results
+        bind:
+          create_host_path: false
+      - tools-build:/build
+      - cargo-registry:/usr/local/cargo/registry
+      - cargo-git:/usr/local/cargo/git
+
+volumes:
+  dev-build:
+  tools-build:
+  cargo-registry:
+  cargo-git:

@@ -1,0 +1,28 @@
+/target/
+/dist/
+/.tools/
+/test-results/
+__pycache__/
+
+# Local agent settings and credentials must stay outside the repository.
+/.agents/
+/.codex/
+/AGENTS.md
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+/credentials.json
+/secrets/
+
+# Local editor and operating-system files.
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
